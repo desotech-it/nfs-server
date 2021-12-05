@@ -32,7 +32,8 @@ docker build -t r.deso.tech/dsk/nfsserver:1.0 .
 ## mounting the nfs share from another host
 
 ```
-mount -v -t nfs -o ro,nfsvers=3,nolock,proto=udp,port=2049 <ip_address_kubernetes_host>:/nfs /mnt/scratch
+mkdir /mnt/scratch
+mount -v -t nfs -o rw <ip_address_kubernetes_host>:/nfs /mnt/scratch
 ```
 
 ## Based on an idea
