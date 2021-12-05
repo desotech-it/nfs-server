@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-server
+  name: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: nfs-server
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: r.deso.tech/dsk/nfsserver:latest
+        name: nfsserver
+        resources: {}
+        securityContext:
+#          capabilities:
+#            add: ["SYS_ADMIN", "SETPCAP"]
+          privileged: true
+        env:
+          - name: NFS_EXPORT_DIR_1
+            value: "/nfs"
+          - name: NFS_EXPORT_DOMAIN_1
+            value: "*"
+          - name: NFS_EXPORT_OPTIONS_1
+            value: "rw,insecure,no_subtree_check,no_root_squash,fsid=1"
+        ports:
+          - containerPort: 111
+          - containerPort: 2049
+          - containerPort: 32765
+          - containerPort: 32766
+          - containerPort: 32767
+        volumeMounts:
+        - mountPath: /nfs
+          name: nfs
+      volumes:
+      - name: nfs
+        hostPath:
+          path: /nfs
+status: {}
